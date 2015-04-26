@@ -17,7 +17,8 @@ class Pelo {
 
     Pelo(float t_radio); //this is the constructor
     void draw(int newRadio);
-    void draw2(int numTouches, int newRadio);
+    void draw2(int tween, int newRadio);
+    
     private:
     float z;
     float phi;

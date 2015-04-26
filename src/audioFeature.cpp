@@ -22,9 +22,6 @@ double myOscOutput,myFilteredOutput;
 double myEnvelopeData[6] = {500,10,675,450,0,450};  //creature is stable and being fed
 maxiEnvelope myEnvelope;
 maxiFilter myFilter;
-
-
-
 maxiOsc myOtherSine, myPhasor; // dying tone
 
 float creaturefreq = ofRandom(1, 100);
@@ -49,7 +46,7 @@ void audioFeature::setup()
      512 = 20-21 FPS stable @ 8000
      */
     
-    bg.loadImage("images/bgtest.png");
+    //bg.loadImage("images/bgtest.png");
     //bg.resize(ofGetWidth(), ofGetHeight());
     
     ofSoundStreamSetup(2,2,this, sampleRate, bufferSize, 4); /* this has to happen at the end of setup - it switches on the DAC */
@@ -57,7 +54,7 @@ void audioFeature::setup()
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
-
+/*
 void audioFeature::setBrightness(int x)
 {
     // use system time to affect luminosity / brightnss >> tie of day correspond to saturation or luminosity
@@ -81,7 +78,7 @@ void audioFeature::setBrightness(int x)
         }
         bg.update();
 }
-
+*/
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 
@@ -101,7 +98,7 @@ void audioFeature::draw(){
 	 between -1 and 1. You need to account for this somehow. Get the absolute value for example.
 	 */
     
-    bg.draw(0,0);
+    //bg.draw(0,0);
 }
 
 //--------------------------------------------------------------
@@ -109,20 +106,23 @@ void audioFeature::draw(){
 
 void audioFeature::audioOut(float * output, int bufferSize, int nChannels) {
 	for (int i = 0; i < bufferSize; i++){
-       
-        if (creatureMoodMeter > 75){//very happy output
-            outputs1[0]=Sine6.triangle(creaturefreq)*Sine8.phasor(totalTouches/creatureMoodMeter, 0.5, creatureMoodMeter/10)*Sine7.square(40); // creature Arnold
-            outputs1[0] =Sine9.triangle(Sine10.phasor(totalTouches*10,creatureMoodMeter,creatureColour[2]));
-            
-        }else if (creatureMoodMeter < -75){// creature is dying
-            outputs1[0]=Sine6.triangle(creaturefreq)*Sine8.phasor(totalTouches/4, creatureData.currentDate[2]/100, 8.0)*Sine7.square(creatureData.currentDate[0]*2); // creature Arnold
-            outputs1[0] =Sine9.triangle(Sine10.phasor(totalTouches*10,creatureColour[1],creatureColour[0]));
+        ///moods
+        //creatureMood[x];
+        //0=happy, 1=sad, 2=unhappy, 3= angry, 4=hungry, 5=seed (not used).
         
-        }else if (creatureMoodMeter < -25 && creatureMoodMeter > -75){// creature is angry
-            outputs1[0]=Sine6.triangle(creaturefreq)*Sine8.phasor(totalTouches, 0.5, 8.0)*Sine7.square(40); // creature sound 6
+        if (playerInput[0] > playerInput[1]){// happy output
+            outputs1[0]=Sine6.triangle(creaturefreq)*Sine8.phasor(creatureMood[0], 0.5, creatureMood[0])*Sine7.square(40); // creature Arnold
+            outputs1[0] =Sine9.triangle(Sine10.phasor(growthRate,creatureMood[0],creatureColour[2]));
             
-        }else if (creatureMoodMeter > 25 && creatureMoodMeter < 75){// creature is stable
-            outputs1[0] =Sine9.triangle(Sine10.phasor(creatureData.currentDate[1],100,(creatureColour[1]+creatureColour[2])-creatureColour[0])); // creature sound 7
+        }else if (playerInput[1] > playerInput[0]){// creature is sad
+            outputs1[0]=Sine6.triangle(creaturefreq)*Sine8.phasor(creatureMood[6], creatureMood[2], 8.0)*Sine7.square(creatureMood[2]); // creature Arnold
+            outputs1[0] =Sine9.triangle(Sine10.phasor(creatureMood[5],creatureColour[1],creatureColour[0]));
+        
+        }else if (creatureMood[4]+creatureMood[2] > creatureMood[0]+creatureMood[1]){// creature is angry
+            outputs1[0]=Sine6.triangle(creaturefreq)*Sine8.phasor(creatureMood[3], 0.5, 8.0)*Sine7.square(40); // creature sound 6
+            
+        }else if (creatureMood[4]*10 > creatureMood[5]){// creature is hungry
+            outputs1[0] =Sine9.triangle(Sine10.phasor(creatureMood[4],100,(creatureColour[1]+creatureColour[2])-creatureColour[0])); // creature sound 7
         }
 
         /*
@@ -199,61 +199,67 @@ void audioFeature::stateChange(){
     
     }
     */
+    ///moods
+    //creatureMood[x];
+    //0=happy, 1=sad, 2=unhappy, 3= angry, 4=hungry, 5=seed (not used).
     
-    if (creatureMoodMeter > 75){
-        //ARNOLD: What does this do?
+    if (creatureMood[5]/playerInput[0] > creatureMood[5]/playerInput[1]){//happy
 
-    }else if (creatureMoodMeter < -75){// creature is dying
-        squareSine = 350;
-        startPhase = 4;
-        endPhase = 6;
-        phaseFreq = 400;
-        
-    }else if (creatureMoodMeter < -25 && creatureMoodMeter > -75){// creature is angry
-        sine2hz = 0.5;
-        sine2hz2 = 24;
-        sine2freq = 400;
-        
-    }else if (creatureMoodMeter > 25 && creatureMoodMeter < 75){// creature is stable
-        sine2hz = 1;
-        sine2hz2 = 60;
-        sine2freq = 80;
-    }
+        }else if (creatureMood[5]/(playerInput[1]*2) > creatureMood[5]/playerInput[2]){// creature is dying
+            squareSine = 350;
+            startPhase = 4;
+            endPhase = 6;
+            phaseFreq = 400;
+            
+        }else if (creatureMood[5]/playerInput[1] > creatureMood[5]/playerInput[0]){// creature is angry
+            sine2hz = 0.5;
+            sine2hz2 = 24;
+            sine2freq = 400;
+            
+        }else if (creatureMood[4]+creatureMood[2] > creatureMood[0]+creatureMood[1]){// creature is stable
+            sine2hz = 1;
+            sine2hz2 = 60;
+            sine2freq = 80;
+        }
 }
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 
-void audioFeature::playerInput(string touchInput){
-    if(touchInput == "up"){
-        ///what does this do? It used to be keyRealsed...
-        if(creatureMoodMeter < -75){//dying
-            sine2hz = 0;
-            sine2hz2 = 0;
-            sine2freq = 0;
-            
-        }else if(creatureMoodMeter < -25 && creatureMoodMeter > -75){//angry
-            squareSine = 0;
-            startPhase = 0;
-            endPhase = 0;
-            phaseFreq = 0;
-        }
-    }else if (touchInput == "down"){
-        if(creatureMoodMeter > 25 && creatureMoodMeter < 75){//happy?
-            sine2hz = 0;
-            sine2hz2 = 0;
-            squareSine = 0;
-            startPhase = 0;
-            endPhase = 0;
-        }
-        }else if(creatureMoodMeter > 75){//very happy
-            sine2hz = 0;
-            sine2hz2 = 0;
-            sine2freq = 0;
-            squareSine = 0;
-            endPhase = 0;
-            phaseFreq = 0;
-        }
+void audioFeature::touchInput(string touchInput){
+    if(touchInput == "down"){
+    if(creatureMood[0] > creatureMood[1]){
+        sine2hz = 0;
+        sine2hz2 = 0;
+        sine2freq = 0;
+        squareSine = 0;
+        endPhase = 0;
+        phaseFreq = 0;
+
+    } else if(creatureMood[0] > creatureMood[1]){
+        sine2hz = 0;
+        sine2hz2 = 0;
+        sine2freq = 0;
+        
+    } else if(creatureMood[1] > creatureMood[2]){
+        sine2hz = 0;
+        sine2hz2 = 0;
+        squareSine = 0;
+        startPhase = 0;
+        endPhase = 0;
+        
+    } else if(creatureMood[2] > creatureMood[3]){
+        sine2hz = 0;
+        sine2hz2 = 0;
+        sine2freq = 0;
+
+    }else if(creatureMood[3] > creatureMood[4]){
+        squareSine = 0;
+        startPhase = 0;
+        endPhase = 0;
+        phaseFreq = 0;
+    }
+    }
 }
 //--------------------------------------------------------------
 //--------------------------------------------------------------

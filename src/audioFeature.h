@@ -11,7 +11,7 @@ class audioFeature : public ofBaseApp{
     void draw();
     
     void stateChange();
-    void playerInput(string touchInput);
+    void touchInput(string touchInput);
     
     void setBrightness(int x);
 

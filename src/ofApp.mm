@@ -21,7 +21,7 @@ void ofApp::setup(){
     ////////////////////////////////////////////////////////////
     //Creature Hairs
     ////////////////////////////////////////////////////////////
-    cuantos = 800; //hairs
+    cuantos = 600; //hairs
     radio = ofGetHeight()/10;
     
     for(int i = 0; i < cuantos; i++){
@@ -42,24 +42,28 @@ void ofApp::update(){
     //AUDIO
     ////////////////////////////////////////////////////////////
     audio.update();
-    audio.setBrightness(ofGetSystemTime());
+    //audio.setBrightness(ofGetSystemTime());
     ////////////////////////////////////////////////////////////
     //MOOD CHANGE
     ////////////////////////////////////////////////////////////
-    creature.creatureMood(happyUp);
+    creature.moodOFcreature();
+    creature.creatureMoodShift();
     ////////////////////////////////////////////////////////////
     //INPUT
     ////////////////////////////////////////////////////////////
     if(playerPress == true){
+        //growthRate = growthRate*0.01;
+        
         ///if player IS tapping the screen
         if(hold < holdMax){
             hold++;
         }
-        if(growth == false){
-            if(happyUp == false){
-                totalTouches -= (growthRate/hold)*0.02;
-            }
+        if(happyUp == false){
+            playerInput[1]++;//off
+        }else{
+            playerInput[0]++;//on
         }
+        
         //COLOUR EFFECT ON TOUCH
         creature.colourShift();
     }
@@ -69,6 +73,7 @@ void ofApp::update(){
         if (hold > 1){
             hold--;
         }
+        
         if(hold < holdMax/2){
             ////////////////////////////////////////////////////////////
             //COLOUR EFFECT
@@ -78,14 +83,15 @@ void ofApp::update(){
                 creatureColour[1] -= ofRandom(0, 1);
                 creatureColour[2] -= ofRandom(0, 1);
             }
-            if(creatureColour[0]+creatureColour[1]+creatureColour[2] >= 88*3 &&
-               creatureColour[0]+creatureColour[1]+creatureColour[2] <= 144*3){
-                creatureColour[0] += ofRandom(0, 3);
-                creatureColour[1] += ofRandom(0, 3);
-                creatureColour[2] += ofRandom(0, 3);
+            if(creatureColour[0]+creatureColour[1]+creatureColour[2] > 0 &&
+               creatureColour[0]+creatureColour[1]+creatureColour[2] < 144*3){
+                creatureColour[0] += ofRandom(1, 5);
+                creatureColour[1] += ofRandom(1, 5);
+                creatureColour[2] += ofRandom(1, 5);
                 
             }
         }
+    
     }
     ////////////////////////////////////////////////////////////
     //EFFECTS
@@ -94,44 +100,19 @@ void ofApp::update(){
     //accelerometer
     ofVec3f accel = ofxAccelerometer.getForce();
     ofVec2f orientation = ofxAccelerometer.getOrientation()
-     */
-    ////////////////////////////////////////////////////////////
-    //GROWTH EFFECT
-    ////////////////////////////////////////////////////////////
-    if(totalTouches > growthRate && radio < ofGetHeight()/4.5){
-        growthRate++;
-        tempRADIO = radio;
-        growth = true;
-    }
-    
-    if(growth == true){
-    playerPress = false;
-            if(radio < tempRADIO+(ofGetHeight()/holdMax)){
-                radio++;
-                growth = false;
-            }///makes creature bigger
-        
-            if(happyUp == true){//if the creature is happy last action?
-                totalTouches -= totalTouches*0.015;
-                if(totalTouches < growthRate*0.9){
-                    growth = false;
-                }
-            }
-    }
      
     ////////////////////////////////////////////////////////////
     //Debug stuff
     ////////////////////////////////////////////////////////////
-        /*
+    
         cout << "==========" << endl;
         cout << "RED: " << creatureColour[0] << endl;
         cout << "BLUE: " << creatureColour[1] << endl;
         cout << "GREEN: " << creatureColour[2] << endl;
-        cout << "Total Touches: " << totalTouches << endl;
-        cout << "Radio: " << radio << endl;
+        //cout << "Radio: " << radio << endl;
         cout << "happyUp: " << happyUp << endl;
         cout << "FPS: " << ofGetFrameRate() << endl;
-     */
+    */
     }
 
 //--------------------------------------------------------------
@@ -153,9 +134,9 @@ void ofApp::touchDown(ofTouchEventArgs & touch){
     happyUp = FALSE;
     
     if(growth == false){
-        //double tap to hurt, single tap to heal, hold to double last effect
-        totalTouches -= ofRandom((growthRate/hold)*0.02);
-        audio.playerInput("down");
+            //double tap to hurt, single tap to heal, hold to double last effect
+            growthRate -= ofRandom(creatureMood[6]);
+            audio.touchInput("down");
     }
 }
 
@@ -166,8 +147,8 @@ void ofApp::touchMoved(ofTouchEventArgs & touch){
     happyUp = TRUE;
     
     if(growth == false){
-        //double tap to hurt, single tap to heal, hold to double last effect
-        totalTouches += ofRandom((growthRate/hold)*0.02);
+            //double tap to hurt, single tap to heal, hold to double last effect
+        growthRate += ofRandom(creatureMood[6]);
     }
     
 }
@@ -175,7 +156,7 @@ void ofApp::touchMoved(ofTouchEventArgs & touch){
 //--------------------------------------------------------------
 void ofApp::touchUp(ofTouchEventArgs & touch){
     playerPress = false;
-    audio.playerInput("up");
+    audio.touchInput("up");
     creature.creatureFinder(touchposx, touchposy);
     
     cout << "==========" << endl;
@@ -211,35 +192,17 @@ void ofApp::draw(){
     ofRotateX(ofRadToDeg(rz));
     //ofRotateZ(ofRadToDeg(rz));
     
-
-    hairLonger = false; //first turn off hair longer
-    ofSetColor(creatureColour[1], creatureColour[0], creatureColour[2]);///then set hair colour
-    for(int i = 0; i < cuantos*0.5; i++){///loop and draw half of the hairs
-        lista[i].draw(radio/2+((creatureMoodMeter*totalTouches)*0.003));
-    }
-    
     hairLonger = true;
-    ofSetColor(creatureColour[0], creatureColour[2], creatureColour[1]);
+    ofSetColor(creatureColour[0], creatureColour[1], creatureColour[2]);
     for(int i = cuantos*0.5; i < cuantos; i++){
-        lista[i].draw2(hold, radio-(totalTouches*0.007));
+        lista[i].draw2(hold, radio+(growthRate*creatureMood[6]));
     }
     
-    /*
-    ///debug for flipGrowth
-    //IF TRUE, GREEN
-    if(happyUp == TRUE){
-        ofFill();
-        ofSetColor(0, 255, 0);
-        ofDrawSphere(0, 0, 10);
-    }else{
-        // IF FALSE, RED
-        ofSetColor(255, 0, 0);
-        ofDrawSphere(0, 0, 10);
+    hairLonger = false; //first turn off hair longer
+    ofSetColor(creatureColour[2], creatureColour[1], creatureColour[0]);///then set hair colour
+    for(int i = 0; i < cuantos*0.5; i++){///loop and draw half of the hairs
+        lista[i].draw((radio/2)+(growthRate*creatureMood[6]));
     }
-     */
-    
-    
-
 }
 
 //--------------------------------------------------------------

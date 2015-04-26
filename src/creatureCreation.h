@@ -17,9 +17,10 @@
 
 extern int creatureColour[4];
 extern bool happyUp;
+extern int playerInput[3];
 extern float growthRate;
-extern float totalTouches;
-extern float creatureMoodMeter;
+extern float creatureMood[7];
+//0=happy, 1=sad, 2=unhappy, 3= angry, 4=hungry, 5=seed.
 
 extern float hold;
 extern int holdMax;
@@ -29,14 +30,15 @@ extern bool hairLonger;
 class creatureCreation{
     public:
     creatureCreation();
-    void colourShift();
     void setupCreature();
     void saveGame();
     void loadGame();
     bool loadCreature = false;
-    void creatureMood(bool playerAction);
+    void moodOFcreature();
+    void colourShift();
+    void creatureMoodShift();
+    bool moodDone = false;
 
-    int mode;
     double hairyness;
     double noisyness;
     double ridges;
@@ -51,9 +53,8 @@ class creatureCreation{
     int touchAvLength;
 
     private:
-    void refresh();
-    bool updated = false;
-    
+    void inputsUpdate(bool allInputs);
+    bool updateInputs = false;
     double lastTime[3];
     int lastDate[3];
     
