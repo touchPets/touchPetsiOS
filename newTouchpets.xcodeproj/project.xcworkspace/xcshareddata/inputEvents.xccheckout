@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>1C042C01-A9B7-418F-AD83-7E69F9598808</string>
+	<key>IDESourceControlProjectName</key>
+	<string>inputEvents</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>BDC9C036-2BE5-4CB8-8A12-BFA81E069A8E</key>
+		<string>https://github.com/TouchPetsProject/inputEvents.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>inputEvents.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>BDC9C036-2BE5-4CB8-8A12-BFA81E069A8E</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/TouchPetsProject/inputEvents.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>BDC9C036-2BE5-4CB8-8A12-BFA81E069A8E</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>BDC9C036-2BE5-4CB8-8A12-BFA81E069A8E</string>
+			<key>IDESourceControlWCCName</key>
+			<string>inputEvents</string>
+		</dict>
+	</array>
+</dict>
+</plist>
