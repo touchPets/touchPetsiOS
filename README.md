@@ -17,8 +17,10 @@ Nature and nurture is one aspect of creation but sound input (both from yourself
 
 NEEDS TO BE DONE:
 
-1: patical background added,
+1: patical backgrounds creation,
 2: screen rotation,
 3: more sounds added,
 4: settings menu (reset creature, manual save/load, etc),
-4: various bugs fixed.
+5: more creature states,
+6: creature growth on welcome screen,
+7: various bugs fixed.
