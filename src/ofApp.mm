@@ -53,11 +53,20 @@ void ofApp::update(){
     ////////////////////////////////////////////////////////////
     if(playerPress == true){
         //growthRate = growthRate*0.01;
-        
-        ///if player IS tapping the screen
-        if(hold < holdMax){
+        ////////////////////////////////////////////////////////////
+        //MOOD CHANGE
+        ////////////////////////////////////////////////////////////
+        if(creatureMood[5] < creatureMood[6]){
+            creatureMood[5] += ofRandom(creatureMood[6]*0.0005);
+            
+        }else if (creatureMood[5] > creatureMood[6]){
+            creatureMood[5] -= ofRandom(creatureMood[6]*0.0005);
+            
+        }else if(hold < holdMax){
             hold++;
         }
+        ///if player IS tapping the screen
+
         if(happyUp == false){
             playerInput[1]++;//off
         }else{
@@ -72,26 +81,10 @@ void ofApp::update(){
         ///if player is NOT tapping the screen
         if (hold > 1){
             hold--;
+        }else if (creatureMood[6] > creatureMood[5]){
+            creatureMood[5] -= ofRandom(creatureMood[6]*0.0001);
+            
         }
-        
-        if(hold < holdMax/2){
-            ////////////////////////////////////////////////////////////
-            //COLOUR EFFECT
-            ////////////////////////////////////////////////////////////
-            if(creatureColour[0]+creatureColour[1]+creatureColour[2] >= 88*2){
-                creatureColour[0] -= ofRandom(0, 1);
-                creatureColour[1] -= ofRandom(0, 1);
-                creatureColour[2] -= ofRandom(0, 1);
-            }
-            if(creatureColour[0]+creatureColour[1]+creatureColour[2] > 0 &&
-               creatureColour[0]+creatureColour[1]+creatureColour[2] < 144*3){
-                creatureColour[0] += ofRandom(1, 5);
-                creatureColour[1] += ofRandom(1, 5);
-                creatureColour[2] += ofRandom(1, 5);
-                
-            }
-        }
-    
     }
     ////////////////////////////////////////////////////////////
     //EFFECTS
@@ -133,9 +126,9 @@ void ofApp::touchDown(ofTouchEventArgs & touch){
     playerPress = true;
     happyUp = FALSE;
     
-    if(growth == false){
+    if(growth == false && growthRate < ofGetHeight()/5){
             //double tap to hurt, single tap to heal, hold to double last effect
-            growthRate -= ofRandom(creatureMood[6]);
+            growthRate -= ofRandom(creatureMood[6]*0.001);
             audio.touchInput("down");
     }
 }
@@ -146,9 +139,9 @@ void ofApp::touchMoved(ofTouchEventArgs & touch){
     touchposy = touch.y;
     happyUp = TRUE;
     
-    if(growth == false){
+    if(growth == false && growthRate < ofGetHeight()/5){
             //double tap to hurt, single tap to heal, hold to double last effect
-        growthRate += ofRandom(creatureMood[6]);
+        growthRate += ofRandom(creatureMood[6]*0.001);
     }
     
 }
@@ -195,13 +188,13 @@ void ofApp::draw(){
     hairLonger = true;
     ofSetColor(creatureColour[0], creatureColour[1], creatureColour[2]);
     for(int i = cuantos*0.5; i < cuantos; i++){
-        lista[i].draw2(hold, radio+(growthRate*creatureMood[6]));
+        lista[i].draw2(hold, (creatureMood[5]+1)+growthRate);
     }
     
     hairLonger = false; //first turn off hair longer
     ofSetColor(creatureColour[2], creatureColour[1], creatureColour[0]);///then set hair colour
     for(int i = 0; i < cuantos*0.5; i++){///loop and draw half of the hairs
-        lista[i].draw((radio/2)+(growthRate*creatureMood[6]));
+        lista[i].draw(creatureMood[5]+1);
     }
 }
 

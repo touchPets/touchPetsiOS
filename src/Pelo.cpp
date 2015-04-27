@@ -91,4 +91,6 @@ void Pelo::draw2(int tween, int newRadio){
     }
     
     ofLine(x,y,z, xb,yb,zb);
+    //ofTriangle(x,y,z, xb,yb,zb);
+    //ofTriangle(x, y, z, xb, yb, zb, x+xb, y+yb, z+zb);
 }

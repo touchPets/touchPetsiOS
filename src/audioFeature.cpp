@@ -203,15 +203,15 @@ void audioFeature::stateChange(){
     //creatureMood[x];
     //0=happy, 1=sad, 2=unhappy, 3= angry, 4=hungry, 5=seed (not used).
     
-    if (creatureMood[5]/playerInput[0] > creatureMood[5]/playerInput[1]){//happy
+    if (playerInput[0] > playerInput[1]){//happy
 
-        }else if (creatureMood[5]/(playerInput[1]*2) > creatureMood[5]/playerInput[2]){// creature is dying
+        }else if (playerInput[1] > playerInput[0]){// creature is dying
             squareSine = 350;
             startPhase = 4;
             endPhase = 6;
             phaseFreq = 400;
             
-        }else if (creatureMood[5]/playerInput[1] > creatureMood[5]/playerInput[0]){// creature is angry
+        }else if (playerInput[2] > playerInput[1]/2){// creature is angry
             sine2hz = 0.5;
             sine2hz2 = 24;
             sine2freq = 400;

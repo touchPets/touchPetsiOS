@@ -121,7 +121,7 @@ void creatureCreation::setupCreature(){
     //checks for a saved game
     
     if(loadCreature == false){
-        ///set to false or true for testing
+        ///set to false for user or true for testing
         
         cout << "creatureCreation::settingCreature" << endl;
         //main creature needs/functions/data
@@ -164,14 +164,17 @@ void creatureCreation::moodOFcreature(){
         playerInput[2] = playerInput[0] + playerInput[1];//adds all inputs
     }
     
-    if(playerInput[2] == 0|| creatureMood[5] == 0){//first boot event
+    if(playerInput[2] == 0){//first boot event
         cout << "creatureCreation::SeedUpdateBoot or ERROR" << endl;
         cout << "==========" << endl;
-        creatureMood[5] = ofRandomf();//picks a random number
+        creatureMood[5] = ofRandom(1);//picks a random number
+        //i.e. A=1
         creatureMood[6] = creatureMood[5];//sets superseed to seed
+        //i.e. A=B ; A1=B1
         creatureMood[6] = creatureMood[6]*2;
-        creatureMood[6] = (creatureMood[5]+creatureMood[6])//seed+superseed(seed*2)
-        * (creatureMood[6]*0.1);//times superseed 10%
+        //i.e. B1*2 ; B=2
+        creatureMood[6] = (creatureMood[5]+creatureMood[6]) + (creatureMood[6]/0.1);
+        //i.e. (B2+A1)* (B2/0.1) ; 3 + 20 = 23
         
         cout << "SEED::boot=" << creatureMood[5] <<endl;
         cout << "SUPERSEED::boot=" << creatureMood[6] <<endl;
@@ -180,18 +183,24 @@ void creatureCreation::moodOFcreature(){
     ////////////////////////////////////////////////////////////
     //GROWTH EFFECT USING SEEDS
     ////////////////////////////////////////////////////////////
-    if(ofGetSeconds() == 30 && playerInput[2] > 0//if a time has passed and player tapped on screen
-       && moodDone == false){//if mood can be changed
-        cout << "==========" << endl;
-        cout << "TIMELY SEED UPDATE" << endl;
+    if(ofGetMinutes() == 30 ||  creatureMood[5] > creatureMood[6]){//if a 30mins has passed or super seed has become seed.
         
-            creatureMood[5] = ofRandom(playerInput[2]*0.01);//updates via all player input
-            creatureMood[6] = creatureMood[5];//sets superseed to seed
-            creatureMood[6] = ofRandom(creatureMood[6]*2);
-            creatureMood[6] = creatureMood[5]/(creatureMood[6]+playerInput[2]);
+       if(moodDone == false && playerInput[2] > 0 && creatureMood[6] < ofGetHeight()/5){//if mood can be changed and player tapped on screen
+        cout << "==========" << endl;
+        cout << "SEED UPDATE" << endl;
+           
+           creatureMood[6] = ofRandom(creatureMood[6]);//uses playerinput
+           //i.e. A=200*0.01= 2 high, A=200*0.01= 0.1 low
+           creatureMood[6] = creatureMood[6]+1;
+           //i.e. B=2 || 0.1  ; B=3 || 1.1
+           creatureMood[6] = (creatureMood[5]+creatureMood[6]) + (creatureMood[6]/0.1);
+           //i.e. (A2+B3) + (B3/0.1) ; 5 + 30 = B35 high and A=2
+           //i.e. (A2+B1.1) + (B1.1/0.1) ; 3.1 + 11 = B14.1 low A=2
     
         cout << "newSEED= " << creatureMood[5] <<endl;
         cout << "newSUPERSEED= " << creatureMood[6] <<endl;
+           
+       }
     }
 }
 void creatureCreation::creatureMoodShift(){
@@ -239,29 +248,21 @@ void creatureCreation::creatureMoodShift(){
                     creatureColour[0] = ofRandom(200, 255); //red
                 }
             }
-            
-             cout << "Happy: " << creatureMood[0] <<endl;
-             cout << "Sad: " << creatureMood[1] <<endl;
-             cout << "Unhappy: " << creatureMood[2] <<endl;
-             cout << "Angry: " << creatureMood[3] <<endl;
-             cout << "Hungry: " << creatureMood[4] <<endl;
-             cout << "==========" << endl;
-             cout << "INPUTS" << endl;
-             cout << "On: " << playerInput[0] <<endl;
-             cout << "Off: " << playerInput[1] <<endl;
-             cout << "All: " << playerInput[2] <<endl;
-            cout << "==========" << endl;
-            cout << "newSEED= " << creatureMood[5] <<endl;
-            cout << "newSUPERSEED= " << creatureMood[6] <<endl;
-            
             moodDone = true;
         }
-        /*else if(playerInput[0] < playerInput[2]/2 || playerInput[1] < playerInput[2]/2){//from all
-         creatureMood[2] = creatureMood[0]+creatureMood[1];
-         cout << "All Want:" << playerInput[2] << endl;
-         
-         }
-         */
+        cout << "Happy: " << creatureMood[0] <<endl;
+        cout << "Sad: " << creatureMood[1] <<endl;
+        cout << "Unhappy: " << creatureMood[2] <<endl;
+        cout << "Angry: " << creatureMood[3] <<endl;
+        cout << "Hungry: " << creatureMood[4] <<endl;
+        cout << "==========" << endl;
+        cout << "INPUTS" << endl;
+        cout << "On: " << playerInput[0] <<endl;
+        cout << "Off: " << playerInput[1] <<endl;
+        cout << "All: " << playerInput[2] <<endl;
+        cout << "==========" << endl;
+        cout << "newSEED= " << creatureMood[5] <<endl;
+        cout << "newSUPERSEED= " << creatureMood[6] <<endl;
         
     }
     ////////////////////////////////////////////////////////////
